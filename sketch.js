@@ -40,6 +40,8 @@ function setup(){
  contador = 0;
  algodoes = new Group();
  espinhos = new Group();
+ trex.debug = false;
+ trex.setCollider("circle",0,0,35);
 }
 
 function draw(){
@@ -53,30 +55,38 @@ if(estado === START){
    }
 
    solo.velocityX = -2;
-
-
-
-
+   if (solo.x <0){
+    solo.x = solo.width/2;
+   }
+   if(keyDown("space")&&trex.y>=150){
+    trex.velocityY = -10;
+   }
+   trex.velocityY = trex.velocityY + 1;
+   nuvens();
+   mamacos();
+   contador += Math.round(frameCount/60);
+   if (espinhos.isTouching(trex)) 
+   {
+       estado = GAMEOVER;
+   }
 } else if(estado === GAMEOVER){
    solo.velocityX = 0;
+   algodoes.setVelocityXEach(0);
+   espinhos.setVelocityXEach(0);
+   
 
 
 }
 
- if (solo.x <0){
- solo.x = solo.width/2;
-}
 
- if(keyDown("space")&&trex.y>=150){
- trex.velocityY = -10;
-}
- trex.velocityY = trex.velocityY + 1;
+
+ 
+
  trex.collide(vridro);
- nuvens();
- mamacos();
+ 
  drawSprites();
  text(contador, 550, 50);
- contador += Math.round(frameCount/60);
+ 
 }
 
 function nuvens(){
