@@ -11,6 +11,11 @@ var espinhos;
 var START = 1;
 var GAMEOVER = 0;
 var estado = START;
+var sustin;
+var perdeuplayboy;
+var fimdejogo;
+var reset;
+var fotinhadoreset;
 
 function preload(){
  trexCorrendo = loadAnimation("trex1.png","trex3.png","trex4.png");
@@ -22,6 +27,9 @@ function preload(){
  juliette4 = loadImage ("obstacle4.png");
  juliette5 = loadImage ("obstacle5.png");
  juliette6 = loadImage ("obstacle6.png");
+ sustin = loadAnimation ("trex_collided.png");
+ fimdejogo = loadImage ("gameOver.png");
+ fotinhadoreset = loadImage ("restart.png");
 }
 
 function setup(){
@@ -31,6 +39,7 @@ function setup(){
  solo.x = solo.width/2;
  trex = createSprite(50,160,20,50);
  trex.addAnimation("correndo",trexCorrendo);
+ trex.addAnimation("morreu",sustin);
  trex.scale = 0.5;
  borda = createEdgeSprites();
  vridro = createSprite (200,190,400,10);
@@ -42,6 +51,12 @@ function setup(){
  espinhos = new Group();
  trex.debug = false;
  trex.setCollider("circle",0,0,35);
+ perdeuplayboy = createSprite (300,100);
+ perdeuplayboy.addImage (fimdejogo);
+ reset = createSprite(300,140);
+ reset.addImage (fotinhadoreset);
+reset.scale = 0.5;
+
 }
 
 function draw(){
@@ -69,13 +84,18 @@ if(estado === START){
    {
        estado = GAMEOVER;
    }
+   perdeuplayboy.visible = false;
+   reset.visible = false;
 } else if(estado === GAMEOVER){
    solo.velocityX = 0;
    algodoes.setVelocityXEach(0);
    espinhos.setVelocityXEach(0);
-   
-
-
+   trex.changeAnimation("morreu");
+   algodoes.setLifetimeEach(-3);
+   espinhos.setLifetimeEach(-5);
+   trex.velocityY = 0;
+   perdeuplayboy.visible = true;
+   reset.visible = true;
 }
 
 
