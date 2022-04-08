@@ -16,6 +16,9 @@ var perdeuplayboy;
 var fimdejogo;
 var reset;
 var fotinhadoreset;
+var pulin;
+var die;
+var sossego;
 
 function preload(){
  trexCorrendo = loadAnimation("trex1.png","trex3.png","trex4.png");
@@ -30,6 +33,9 @@ function preload(){
  sustin = loadAnimation ("trex_collided.png");
  fimdejogo = loadImage ("gameOver.png");
  fotinhadoreset = loadImage ("restart.png");
+ pulin = loadSound ("jump.mp3");
+ die = loadSound ("die.mp3");
+ sossego = loadSound ("checkPoint.mp3");
 }
 
 function setup(){
@@ -61,28 +67,37 @@ reset.scale = 0.5;
 
 function draw(){
     background(190);
-if(estado === START){
+    
     if(contador > 100){
-        background(150);
+        background(170);
     }
     if(contador > 200){
-       background(130);
-   }
-
-   solo.velocityX = -2;
+       background(150);
+    }
+   if(contador > 300){
+    background(130);
+    }
+   if(estado === START){
+   solo.velocityX = -(4+contador/100);
    if (solo.x <0){
     solo.x = solo.width/2;
    }
    if(keyDown("space")&&trex.y>=150){
-    trex.velocityY = -10;
+    trex.velocityY = -12;
+    pulin.play();
    }
    trex.velocityY = trex.velocityY + 1;
    nuvens();
    mamacos();
    contador += Math.round(frameCount/60);
+   if(contador >0&&contador%100 === 0)
+   {
+    sossego.play();
+   }
    if (espinhos.isTouching(trex)) 
    {
        estado = GAMEOVER;
+     die.play();
    }
    perdeuplayboy.visible = false;
    reset.visible = false;
@@ -96,17 +111,21 @@ if(estado === START){
    trex.velocityY = 0;
    perdeuplayboy.visible = true;
    reset.visible = true;
+
+   if(mousePressedOver(reset)){
+      restart();
+   }
 }
-
-
-
- 
 
  trex.collide(vridro);
  
  drawSprites();
  text(contador, 550, 50);
  
+}
+
+function restart(){
+    
 }
 
 function nuvens(){
@@ -127,7 +146,7 @@ algodoes.add(claudinei);
 function mamacos (){
 if (frameCount%60===0){
 var carmen = createSprite(600, 165, 10, 40);
-carmen.velocityX = -6;
+carmen.velocityX = -(6+contador/100);
 var paodequeijo = Math.round(random(1,6));
 switch (paodequeijo) {
     case 1: carmen.addImage(juliette1);
