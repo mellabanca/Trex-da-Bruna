@@ -39,16 +39,16 @@ function preload(){
 }
 
 function setup(){
- createCanvas(600,200);
- solo = createSprite (200,180,400,20);
+ createCanvas(windowWidth,windowHeight);
+ solo = createSprite (width/2,height-80,width,125);
  solo.addImage("chão",chao);
  solo.x = solo.width/2;
- trex = createSprite(50,160,20,50);
+ trex = createSprite(50,height-70,20,50);
  trex.addAnimation("correndo",trexCorrendo);
  trex.addAnimation("morreu",sustin);
  trex.scale = 0.5;
  borda = createEdgeSprites();
- vridro = createSprite (200,190,400,10);
+ vridro = createSprite (width/2,height-10,width,125);
  vridro.visible = false;
  //var aleatorio = Math.round(random(1,100));
  //console.log(aleatorio);
@@ -57,9 +57,9 @@ function setup(){
  espinhos = new Group();
  trex.debug = false;
  trex.setCollider("circle",0,0,35);
- perdeuplayboy = createSprite (300,100);
+ perdeuplayboy = createSprite (width/2,height/2-50);
  perdeuplayboy.addImage (fimdejogo);
- reset = createSprite(300,140);
+ reset = createSprite(width/2,height/2);
  reset.addImage (fotinhadoreset);
 reset.scale = 0.5;
 
@@ -82,14 +82,15 @@ function draw(){
    if (solo.x <0){
     solo.x = solo.width/2;
    }
-   if(keyDown("space")&&trex.y>=150){
+   if(keyDown("space")&&trex.y>=height-130 || touches.length > 0 &&trex.y>=height-130){
     trex.velocityY = -12;
+    touches = [];
     pulin.play();
    }
    trex.velocityY = trex.velocityY + 1;
    nuvens();
    mamacos();
-   contador += Math.round(frameCount/60);
+   contador += Math.round(frameRate()/60);
    if(contador >0&&contador%100 === 0)
    {
     sossego.play();
@@ -112,28 +113,34 @@ function draw(){
    perdeuplayboy.visible = true;
    reset.visible = true;
 
-   if(mousePressedOver(reset)){
+   if(mousePressedOver(reset) || touches.length > 0){
       restart();
+      touches = [];
    }
 }
 
  trex.collide(vridro);
  
  drawSprites();
- text(contador, 550, 50);
+ fill("black")
+ text(contador, width-100, height/2-100);
  
 }
 
 function restart(){
-    
+estado = START;
+algodoes.destroyEach();
+espinhos.destroyEach();
+trex.changeAnimation("correndo")
+contador = 0
 }
 
 function nuvens(){
 if (frameCount%60===0){
-claudinei = createSprite (600, 100, 40, 10);
+claudinei = createSprite (width+20, height-300, 40, 10);
 claudinei.addImage (argodao);
 claudinei.scale = random(0.5,1);
-claudinei.y = Math.round(random(1,100));
+claudinei.y = Math.round(random(10,height/2));
 claudinei.velocityX = -3;
 claudinei.lifetime = 250;
 claudinei.depth = trex.depth;
@@ -145,7 +152,7 @@ algodoes.add(claudinei);
 }
 function mamacos (){
 if (frameCount%60===0){
-var carmen = createSprite(600, 165, 10, 40);
+var carmen = createSprite(width, height-95, 10, 40);
 carmen.velocityX = -(6+contador/100);
 var paodequeijo = Math.round(random(1,6));
 switch (paodequeijo) {
